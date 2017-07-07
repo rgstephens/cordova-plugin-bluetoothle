@@ -1819,7 +1819,7 @@ public class BluetoothLePlugin extends CordovaPlugin {
 
     BluetoothGattDescriptor descriptor = characteristic.getDescriptor(clientConfigurationDescriptorUuid);
 
-    if (!address.substring(0, 5).compareTo("FF:FF")) {
+    if (address.substring(0, 5).compareTo("FF:FF") != 0) {
       Log.d("BLE", "Not an iTag: " + address.substring(0, 5));
     } else {
       Log.d("BLE", "iTag Found: " + address.substring(0, 5));
