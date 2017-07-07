@@ -1824,7 +1824,7 @@ public class BluetoothLePlugin extends CordovaPlugin {
     } else {
       Log.d("BLE", "iTag Found: " + address.substring(0, 5));
     }
-    if (isNotDescriptor(descriptor, device, callbackContext) && !address.substring(0, 5).compareTo("FF:FF")) {
+    if (isNotDescriptor(descriptor, device, callbackContext) && (address.substring(0, 5).compareTo("FF:FF") != 0)) {
       return false;
     }
 
