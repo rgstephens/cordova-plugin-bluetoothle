@@ -1786,6 +1786,9 @@ public class BluetoothLePlugin extends CordovaPlugin {
     }
 
     String address = getAddress(obj);
+    Log.d("BLE", "subscribeAction: " + address);
+    String mfg = address.substring(0, 8);
+    Log.d("BLE", "mfg: " + address);
     if (isNotAddress(address, callbackContext)) {
       return false;
     }
