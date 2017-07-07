@@ -1788,7 +1788,7 @@ public class BluetoothLePlugin extends CordovaPlugin {
     String address = getAddress(obj);
     Log.d("BLE", "subscribeAction: " + address);
     String mfg = address.substring(0, 8);
-    Log.d("BLE", "mfg: " + address);
+    Log.d("BLE", "mfg: " + mfg);
     if (isNotAddress(address, callbackContext)) {
       return false;
     }
@@ -1819,7 +1819,12 @@ public class BluetoothLePlugin extends CordovaPlugin {
 
     BluetoothGattDescriptor descriptor = characteristic.getDescriptor(clientConfigurationDescriptorUuid);
 
-    if (isNotDescriptor(descriptor, device, callbackContext)) {
+    if (!address.substring(0, 5).compareTo("FF:FF")) {
+      Log.d("BLE", "Not an iTag: " + address.substring(0, 5));
+    } else {
+      Log.d("BLE", "iTag Found: " + address.substring(0, 5));
+    }
+    if (isNotDescriptor(descriptor, device, callbackContext) && !address.substring(0, 5).compareTo("FF:FF")) {
       return false;
     }
 
