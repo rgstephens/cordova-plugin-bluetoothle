@@ -1867,14 +1867,14 @@ public class BluetoothLePlugin extends CordovaPlugin {
       if (!iTag) {
         result = descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
       } else {
-        result = gatt.setCharacteristicNotification(characteristic, true);
+        result = bluetoothGatt.setCharacteristicNotification(characteristic, true);
       }
     } else {
       Log.d("BLE", "setValue(ENABLE_INDICATION_VALUE)");
       if (!iTag) {
         result = descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
       } else {
-        result = gatt.setCharacteristicNotification(characteristic, true);
+        result = bluetoothGatt.setCharacteristicNotification(characteristic, true);
       }
     }
 
