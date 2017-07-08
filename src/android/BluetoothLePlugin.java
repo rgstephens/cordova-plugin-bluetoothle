@@ -1786,9 +1786,7 @@ public class BluetoothLePlugin extends CordovaPlugin {
     }
 
     String address = getAddress(obj);
-    Log.d("BLE", "subscribeAction: " + address);
     String mfg = address.substring(0, 8);
-    Log.d("BLE", "mfg: " + mfg);
     if (isNotAddress(address, callbackContext)) {
       return false;
     }
@@ -1819,14 +1817,31 @@ public class BluetoothLePlugin extends CordovaPlugin {
 
     BluetoothGattDescriptor descriptor = characteristic.getDescriptor(clientConfigurationDescriptorUuid);
 
-    if (address.substring(0, 5).compareTo("FF:FF") != 0) {
-      Log.d("BLE", "Not an iTag: " + address.substring(0, 5));
-    } else {
+    Boolean iTag = address.startsWith("FF:FF");
+
+    if (iTag) {
       Log.d("BLE", "iTag Found: " + address.substring(0, 5));
+    } else {
+      Log.d("BLE", "Not an iTag: " + address.substring(0, 5));
     }
-    if (isNotDescriptor(descriptor, device, callbackContext) && (address.substring(0, 5).compareTo("FF:FF") != 0)) {
+    if (isNotDescriptor(descriptor, device, callbackContext) && (!iTag)) {
       return false;
     }
+
+/*
+    BluetoothGattCharacteristic bluetoothgattcharacteristic = getCharacteristic(bluetoothgatt, FIND_ME_SERVICE, FIND_ME_CHARACTERISTIC);
+    if (bluetoothgattcharacteristic != null && (bluetoothgattcharacteristic.getProperties() | 0x10) > 0) {
+      //setCharacteristicNotification(bluetoothgatt, bluetoothgattcharacteristic, flag);
+      bluetoothgatt.setCharacteristicNotification(bluetoothgattcharacteristic, flag);
+      BluetoothGattDescriptor descriptor = bluetoothgattcharacteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
+      if (descriptor != null) {
+        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        bluetoothgatt.writeDescriptor(descriptor);
+      }
+    }
+    //Subscribe to the characteristic
+    boolean result = gatt.setCharacteristicNotification(characteristic, true);
+*/
 
     UUID characteristicUuid = characteristic.getUuid();
 
@@ -1848,9 +1863,19 @@ public class BluetoothLePlugin extends CordovaPlugin {
 
     //Use properties to determine whether notification or indication should be used
     if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
-      result = descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+      Log.d("BLE", "setValue(ENABLE_NOTIFICATION_VALUE)");
+      if (!iTag) {
+        result = descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+      } else {
+        result = gatt.setCharacteristicNotification(characteristic, true);
+      }
     } else {
-      result = descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+      Log.d("BLE", "setValue(ENABLE_INDICATION_VALUE)");
+      if (!iTag) {
+        result = descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+      } else {
+        result = gatt.setCharacteristicNotification(characteristic, true);
+      }
     }
 
     if (!result) {
